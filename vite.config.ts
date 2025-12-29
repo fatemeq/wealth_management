@@ -1,14 +1,14 @@
+// vite.config.ts - COMPLETE FIXED VERSION
 import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { VitePWA } from "vite-plugin-pwa";
-import netlifyPlugin from "@netlify/vite-plugin-react-router";
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    reactRouter(),
+    reactRouter(), // Handles Netlify routing automatically
     tsconfigPaths(),
     VitePWA({
       registerType: "autoUpdate",
@@ -50,6 +50,9 @@ export default defineConfig({
         ],
       },
     }),
-    netlifyPlugin(), // <- add this
+    // ✅ REMOVED: netlifyPlugin() - conflicts with reactRouter()
   ],
+  build: {
+    outDir: "dist", // Matches your netlify.toml
+  },
 });
