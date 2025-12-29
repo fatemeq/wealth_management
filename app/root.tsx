@@ -1,75 +1,59 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
+import React, { useEffect } from "react";
+import { ConfigProvider } from "antd";
+import { Links, Meta, Scripts, ScrollRestoration, Outlet } from "react-router";
 
-import type { Route } from "./+types/root";
-import "./app.css";
+export default function Root() {
+  useEffect(() => {
+    if ("serviceWorker" in navigator && "connection" in navigator) {
+      let refreshing = false;
 
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
+      // Handle controller change (new SW takes control)
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (refreshing) return;
+        window.location.reload();
+      });
 
-export function Layout({ children }: { children: React.ReactNode }) {
+      // Register SW
+      import("virtual:pwa-register").then(({ registerSW }) => {
+        registerSW({
+          onNeedRefresh() {
+            if (confirm("🆕 New version available. Reload to update?")) {
+              refreshing = true;
+              window.location.reload();
+            }
+          },
+          onOfflineReady() {
+            console.log("✅ App ready to work offline!");
+          },
+          onRegisteredSW(swScriptUrl) {
+            console.log("✅ Service Worker registered:", swScriptUrl);
+          },
+          onRegisterError(error) {
+            console.error("❌ SW registration failed:", error);
+          }
+        });
+      }).catch(console.error);
+    }
+  }, []);
+
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#1677ff" />
         <Meta />
         <Links />
       </head>
       <body>
-        {children}
+        <div id="root">
+          <ConfigProvider>
+            <Outlet />
+          </ConfigProvider>
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
-  );
-}
-
-export default function App() {
-  return <Outlet />;
-}
-
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
-  let stack: string | undefined;
-
-  if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
-  }
-
-  return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
   );
 }

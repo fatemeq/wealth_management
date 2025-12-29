@@ -1,0 +1,89 @@
+/* Center the tabs */
+.custom-tabs {
+  display: flex;
+  justify-content: center;
+}
+
+/* Shrink nav to content */
+.custom-tabs > .ant-tabs-nav {
+  width: auto !important;
+  display: inline-flex !important;
+  margin-bottom: 20px !important;
+  border-bottom: none !important;        /* remove default bottom border */
+  background: transparent !important;
+}
+
+/* Wrap with pill background */
+.custom-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  display: inline-flex !important;
+  background: #00142a;
+  border: 1px solid #1777ff;
+  padding: 4px;
+  border-radius: 30px;
+  align-items: center;
+
+  max-width: 220px;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  border-bottom: none !important;        /* prevent grey line */
+}
+
+/* hide scrollbars (mobile subtle line) */
+.custom-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  scrollbar-width: none;                 /* Firefox */
+}
+.custom-tabs > .ant-tabs-nav .ant-tabs-nav-wrap::-webkit-scrollbar {
+  display: none;                         /* Chrome/Safari */
+}
+
+/* Individual tabs */
+.custom-tabs > .ant-tabs-nav .ant-tabs-tab {
+  padding: 6px 15px !important;
+  margin: 0 4px !important;
+  border-radius: 20px !important;
+  background: transparent;
+  color: #a1aeaf;
+  transition: all 0.25s ease-in-out !important;
+  border: none !important;
+}
+
+/* Active tab */
+.custom-tabs > .ant-tabs-nav .ant-tabs-tab-active {
+  background: #1777ff;
+  color: #fff !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Hover */
+.custom-tabs > .ant-tabs-nav .ant-tabs-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Remove default ink bar */
+.custom-tabs .ant-tabs-ink-bar,
+.custom-tabs > .ant-tabs-nav .ant-tabs-ink-bar {
+  display: none !important;
+}
+
+/* Kill any ::before bottom line on nav / wrap */
+.custom-tabs .ant-tabs-nav::before,
+.custom-tabs .ant-tabs-nav-wrap::before {
+  border-bottom: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Ensure active tab text is white */
+.custom-tabs > .ant-tabs-nav .ant-tabs-tab-active,
+.custom-tabs > .ant-tabs-nav .ant-tabs-tab-active * {
+  color: #fff !important;
+}
+
+/* Mobile: full-width add button */
+@media (max-width: 576px) {
+  .add-btn-responsive {
+    display: block;
+    width: 100%;
+  }
+}
