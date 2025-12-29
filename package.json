@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "react-router dev",
     "build": "vite build",
     "preview": "vite preview"
   },
