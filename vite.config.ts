@@ -53,6 +53,6 @@ export default defineConfig({
     // ✅ REMOVED: netlifyPlugin() - conflicts with reactRouter()
   ],
   build: {
-    outDir: "dist", // Matches your netlify.toml
+    outDir: "build", // Matches your netlify.toml
   },
 });
