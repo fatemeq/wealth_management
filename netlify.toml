@@ -1,6 +1,6 @@
 [build]
-  command = "pnpm build"   # or "npm run build"
-  publish = "dist"         # Vite’s output folder
+  command = "CI=false pnpm install --frozen-lockfile && pnpm build"
+  publish = "dist"
 
 [[redirects]]
   from = "/*"
