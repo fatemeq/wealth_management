@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-f973eb88'], (function (workbox) { 'use strict';
+define(['./workbox-785e9e58'], (function (workbox) { 'use strict';
 
   self.addEventListener('message', event => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
@@ -82,19 +82,11 @@ define(['./workbox-f973eb88'], (function (workbox) { 'use strict';
    */
   workbox.precacheAndRoute([{
     "url": "/index.html",
-    "revision": "0.d3jsitnb17g"
+    "revision": "0.vbj8hnta9jg"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/index.html"), {
-    allowlist: [/^\/$/],
-    denylist: [/^\/api/, /^\/_/, /^\/static/]
+    allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/^https?:\/\/.*\/api\/.*/i, new workbox.NetworkFirst({
-    "cacheName": "api-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 50,
-      maxAgeSeconds: 86400
-    })]
-  }), 'GET');
 
 }));
