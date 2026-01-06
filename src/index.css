@@ -1,0 +1,14 @@
+/* RTL Fixes for Ant Design Menu */
+html[dir="rtl"] .ant-menu-item .ant-menu-item-icon {
+  margin-right: 0 !important;
+  margin-left: 12px !important;
+}
+
+html[dir="rtl"] .ant-menu-title-content {
+  text-align: right !important;
+}
+
+/* Ensure consistent spacing */
+html[dir="rtl"] .ant-menu-item-selected {
+  text-align: right !important;
+}

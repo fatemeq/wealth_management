@@ -8,6 +8,7 @@ import {
   FallOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import { formatMoney } from "./utils/format";
 import { useUnits } from "./hooks/useUnits";
@@ -53,6 +54,7 @@ const PortfolioRow: React.FC<{
   baseLabel: string;
   percent: number;
 }> = ({ name, color, originalLabel, baseLabel, percent }) => {
+  const { t } = useTranslation();
   const safePercent = Math.max(0, Math.min(100, percent));
 
   return (
@@ -66,7 +68,7 @@ const PortfolioRow: React.FC<{
               borderRadius: "50%",
               background: color,
               display: "inline-block",
-              marginRight: 8,
+              marginInlineEnd: 8,  // ✅ RTL-aware
             }}
           />
           <Text strong style={{ fontSize: 14 }}>
@@ -111,6 +113,7 @@ const PortfolioRow: React.FC<{
 };
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -190,7 +193,7 @@ const Dashboard: React.FC = () => {
         flexDirection: "column",
         gap: 16,
         margin: "0 auto",
-        padding: "0 8px",
+        paddingInline: 8,  // ✅ RTL-aware padding
         maxWidth: 1200,
       }}
     >
@@ -200,7 +203,7 @@ const Dashboard: React.FC = () => {
           <Card style={cardStyle}>
             <Row justify="space-between" align="middle">
               <p style={{ margin: 0, fontSize: 16, fontWeight: 500 }}>
-                Total Wealth
+                {t('dashboard.totalWealth')}
               </p>
               <Avatar size={36} style={{ backgroundColor: "#8b79f7" }}>
                 <WalletOutlined style={{ color: "#fff", fontSize: 18 }} />
@@ -213,7 +216,7 @@ const Dashboard: React.FC = () => {
             </p>
 
             <p style={{ margin: 0, opacity: 0.6 }}>
-              {baseUnit} • {accounts.length} accounts
+              {baseUnit} • {accounts.length} {t('dashboard.accounts')}
             </p>
           </Card>
         </Col>
@@ -222,7 +225,7 @@ const Dashboard: React.FC = () => {
           <Card style={cardStyle}>
             <Row justify="space-between" align="middle">
               <p style={{ margin: 0, fontSize: 16, fontWeight: 500 }}>
-                Total P/L
+                {t('dashboard.totalPL')}
               </p>
               <Avatar size={36} style={{ backgroundColor: "#8b79f7" }}>
                 <RiseOutlined style={{ color: "#fff", fontSize: 18 }} />
@@ -245,7 +248,7 @@ const Dashboard: React.FC = () => {
             <p style={{ margin: 0, opacity: 0.6 }}>
               {totalWealthBase === 0
                 ? "0%"
-                : ((totalPL / totalWealthBase) * 100).toFixed(2) + "% return"}
+                : ((totalPL / totalWealthBase) * 100).toFixed(2) + "% " + t('dashboard.return', { defaultValue: 'return' })}
             </p>
           </Card>
         </Col>
@@ -261,10 +264,10 @@ const Dashboard: React.FC = () => {
             style={{ marginBottom: 8 }}
           >
             <p style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>
-              Accounts
+              {t('dashboard.accounts')}
             </p>
             <p style={{ margin: 0, opacity: 0.7 }}>
-              {accounts.length} total
+              {accounts.length} {t('common.total', { defaultValue: 'total' })}
             </p>
           </Row>
 
@@ -291,16 +294,17 @@ const Dashboard: React.FC = () => {
                 <WalletOutlined style={{ fontSize: 38, color: "#8b79f7" }} />
                 <p
                   style={{
-                    marginTop: 10,
-                    marginBottom: 4,
+                    marginBlock: 10,  // ✅ RTL-aware
+                    marginInlineStart: 0,
+                    marginInlineEnd: 0,
                     fontSize: 16,
                     fontWeight: 500,
                   }}
                 >
-                  No accounts yet
+                  {t('dashboard.noAccounts')}
                 </p>
                 <p style={{ opacity: 0.8, fontSize: 13 }}>
-                  Create one to get started
+                  {t('dashboard.noAccountsAction', { defaultValue: 'Create one to get started' })}
                 </p>
               </div>
             </Card>
@@ -355,7 +359,7 @@ const Dashboard: React.FC = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "flex-end",
-                        marginTop: 4,
+                        marginBlockStart: 4,  // ✅ RTL-aware
                       }}
                     >
                       <Text strong style={{ fontSize: 14 }}>
@@ -366,7 +370,7 @@ const Dashboard: React.FC = () => {
                         style={{
                           fontSize: 14,
                           opacity: 0.6,
-                          marginTop: 2,
+                          marginBlockStart: 2,  // ✅ RTL-aware
                           transform: "rotate(-45deg)",
                         }}
                       />
@@ -378,7 +382,7 @@ const Dashboard: React.FC = () => {
           )}
         </Col>
 
-        {/* DISTRIBUTION (deposit-only) */}
+        {/* DISTRIBUTION */}
         <Col xs={24} md={12}>
           <Row
             justify="space-between"
@@ -386,7 +390,7 @@ const Dashboard: React.FC = () => {
             style={{ marginBottom: 8 }}
           >
             <p style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>
-              Distribution
+              {t('dashboard.distribution')}
             </p>
             <PieChartOutlined />
           </Row>
@@ -416,16 +420,17 @@ const Dashboard: React.FC = () => {
                 />
                 <p
                   style={{
-                    marginTop: 10,
-                    marginBottom: 4,
+                    marginBlock: 10,  // ✅ RTL-aware
+                    marginInlineStart: 0,
+                    marginInlineEnd: 0,
                     fontSize: 16,
                     fontWeight: 500,
                   }}
                 >
-                  No data yet
+                  {t('dashboard.noData')}
                 </p>
                 <p style={{ opacity: 0.8, fontSize: 13 }}>
-                  Add funds to see distribution
+                  {t('dashboard.noDataAction', { defaultValue: 'Add funds to see distribution' })}
                 </p>
               </div>
             ) : (
@@ -477,29 +482,29 @@ const Dashboard: React.FC = () => {
         <Col xs={24}>
           <p
             style={{
-              marginBottom: 8,
-              marginTop: 4,
+              marginBlockEnd: 8,  // ✅ RTL-aware
+              marginBlockStart: 4,
               fontSize: 14,
               fontWeight: 600,
             }}
           >
-            Recent Activity
+            {t('dashboard.recentActivity')}
           </p>
 
           <Card style={{ ...cardStyle, padding: 12 }}>
             {transactions.length === 0 ? (
-              <div style={{ textAlign: "center", marginTop: 24 }}>
+              <div style={{ textAlign: "center", marginBlock: 24 }}>
                 <RiseOutlined
                   style={{ fontSize: 44, color: "#27ae60" }}
                 />
                 <p
                   style={{
-                    marginTop: 12,
+                    marginBlockStart: 12,  // ✅ RTL-aware
                     fontSize: 16,
                     fontWeight: 500,
                   }}
                 >
-                  No transactions yet
+                  {t('dashboard.noTransactions')}
                 </p>
               </div>
             ) : (
@@ -540,7 +545,7 @@ const Dashboard: React.FC = () => {
                           <Avatar
                             style={{
                               background: (tx.color || "#000") + "15",
-                              marginRight: 10,
+                              marginInlineEnd: 10,  // ✅ RTL-aware avatar spacing
                             }}
                             icon={iconNode}
                           />
@@ -552,7 +557,11 @@ const Dashboard: React.FC = () => {
                             }}
                           >
                             <Text strong style={{ fontSize: 13 }}>
-                              {tx.description || tx.type}
+                              {tx.description || 
+                                (tx.type === "deposit" 
+                                  ? t('accounts.deposit') 
+                                  : t('accounts.withdrawal'))
+                              }
                             </Text>
                             <Text
                               type="secondary"

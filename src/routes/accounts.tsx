@@ -16,6 +16,7 @@ import {
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import { useTranslation } from 'react-i18next';
 import { useUnits } from "./hooks/useUnits";
 import { useExchangeRates } from "./hooks/useExchangeRates";
 import { formatMoney } from "./utils/format";
@@ -54,6 +55,7 @@ const COLORS = [
 ];
 
 const Accounts: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { units } = useUnits();
   const { convert } = useExchangeRates();
@@ -74,7 +76,6 @@ const Accounts: React.FC = () => {
   const [baseUnit, setBaseUnit] = useState("USD");
   const [baseSymbol, setBaseSymbol] = useState("$");
 
-  // Load accounts + base unit
   useEffect(() => {
     const saved = localStorage.getItem("accounts");
     if (saved) setAccounts(JSON.parse(saved as string));
@@ -92,13 +93,11 @@ const Accounts: React.FC = () => {
     }
   }, [units]);
 
-  // Resolve base symbol
   useEffect(() => {
     const u = units.find((u) => u.code === baseUnit);
     setBaseSymbol(u?.symbol || "$");
   }, [baseUnit, units]);
 
-  // Persist accounts
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem("accounts", JSON.stringify(accounts));
@@ -110,8 +109,8 @@ const Accounts: React.FC = () => {
 
     if (!name || !currency || !icon || !color) {
       Modal.warning({
-        title: "Missing fields",
-        content: "All fields are required.",
+        title: t('common.allFieldsRequired', { defaultValue: 'All fields required' }),
+        content: t('common.fillAllFields', { defaultValue: 'Please fill all fields' }),
       });
       return;
     }
@@ -146,9 +145,10 @@ const Accounts: React.FC = () => {
 
   const handleDelete = (id: number) => {
     Modal.confirm({
-      title: "Delete account?",
-      okText: "Delete",
+      title: t('accounts.delete'),
+      okText: t('common.yesDelete'),
       okType: "danger",
+      cancelText: t('common.cancel'),
       onOk: () => {
         setAccounts((prev) => prev.filter((acc) => acc.id !== id));
       },
@@ -161,8 +161,8 @@ const Accounts: React.FC = () => {
   };
 
   return (
-    <div style={{ marginLeft: 5, marginRight: 5 }}>
-      {/* HEADER */}
+    <div style={{ paddingInline: 5 }}>
+      {/* ✅ RTL-Aware Header */}
       <Row
         justify="space-between"
         align="middle"
@@ -186,7 +186,7 @@ const Accounts: React.FC = () => {
                 lineHeight: 1.1,
               }}
             >
-              Accounts
+              {t('accounts.title')}
             </Title>
             <Text
               type="secondary"
@@ -196,7 +196,7 @@ const Accounts: React.FC = () => {
                 lineHeight: 1.3,
               }}
             >
-              Manage your wealth accounts
+              {t('accounts.subtitle')}
             </Text>
           </div>
         </Col>
@@ -216,12 +216,11 @@ const Accounts: React.FC = () => {
               });
             }}
           >
-            Add Account
+            {t('accounts.add')}
           </Button>
         </Col>
       </Row>
 
-      {/* ADD / EDIT FORM */}
       {isAdding && (
         <Card
           style={{
@@ -232,13 +231,12 @@ const Accounts: React.FC = () => {
           }}
         >
           <Title level={4} style={{ marginTop: 0 }}>
-            {editingAccount ? "Edit Account" : "Create New Account"}
+            {editingAccount ? t('accounts.edit') : `${t('common.add')} ${t('accounts.title')}`}
           </Title>
 
-          {/* NAME */}
-          <Text strong>Account Name</Text>
+          <Text strong>{t('accounts.accountName', { defaultValue: 'Account Name' })}</Text>
           <Input
-            placeholder="Savings, Investment, Crypto Wallet"
+            placeholder={t('accounts.accountNamePlaceholder', { defaultValue: 'Savings, Investment, Crypto Wallet' })}
             value={newAccount.name}
             onChange={(e) =>
               setNewAccount((s) => ({ ...s, name: e.target.value }))
@@ -246,8 +244,7 @@ const Accounts: React.FC = () => {
             style={{ marginBottom: 16, marginTop: 4 }}
           />
 
-          {/* CURRENCY */}
-          <Text strong>Currency</Text>
+          <Text strong>{t('accounts.currency', { defaultValue: 'Currency' })}</Text>
           <Select
             value={newAccount.currency}
             onChange={(currency) =>
@@ -262,8 +259,7 @@ const Accounts: React.FC = () => {
             ))}
           </Select>
 
-          {/* ✅ FIXED RESPONSIVE ICON SECTION */}
-          <Text strong>Choose Icon</Text>
+          <Text strong>{t('common.icon', { defaultValue: 'Icon' })}</Text>
           <Row
             gutter={[12, 12]}
             style={{
@@ -275,9 +271,9 @@ const Accounts: React.FC = () => {
               const selected = newAccount.icon === emoji;
               return (
                 <Col
-                  xs={6}  // 4 icons per row on mobile
-                  sm={4}  // 6 icons per row on small screens
-                  md={3}  // 8-10 icons per row on medium/large screens
+                  xs={6}
+                  sm={4}
+                  md={3}
                   key={emoji}
                   style={{ display: "flex", justifyContent: "center" }}
                 >
@@ -307,8 +303,7 @@ const Accounts: React.FC = () => {
             })}
           </Row>
 
-          {/* COLORS */}
-          <Text strong>Choose Color</Text>
+          <Text strong>{t('common.color', { defaultValue: 'Color' })}</Text>
           <Row
             gutter={[8, 12]}
             style={{
@@ -341,11 +336,10 @@ const Accounts: React.FC = () => {
             })}
           </Row>
 
-          {/* ACTION BUTTONS */}
           <Row gutter={16} style={{ marginTop: 16 }}>
             <Col span={12}>
               <Button type="primary" block onClick={handleSaveAccount}>
-                {editingAccount ? "Save Changes" : "Create"}
+                {editingAccount ? t('common.save') : t('common.add')}
               </Button>
             </Col>
 
@@ -363,14 +357,13 @@ const Accounts: React.FC = () => {
                   });
                 }}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </Col>
           </Row>
         </Card>
       )}
 
-      {/* ACCOUNTS LIST */}
       <Row gutter={[16, 16]}>
         {accounts.map((acc) => {
           const baseValue = convert(acc.balance, acc.currency, baseUnit);
@@ -383,10 +376,11 @@ const Accounts: React.FC = () => {
                   padding: 16,
                   height: "100%",
                   boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-                  borderLeft: `8px solid ${acc.color}`,
+                  borderInlineStart: `8px solid ${acc.color}`, // ✅ RTL-aware border
                   position: "relative",
                 }}
               >
+                {/* ✅ RTL-Aware Card Header */}
                 <Row justify="space-between" align="top">
                   <Col>
                     <div
@@ -405,12 +399,13 @@ const Accounts: React.FC = () => {
                     </div>
                   </Col>
 
-                  <Col>
+                  {/* ✅ RTL: Edit/Delete buttons flip correctly */}
+                  <Col style={{ display: "flex", gap: 8 }}>
                     <EditOutlined
                       style={{
                         color: "#fa8c16",
                         cursor: "pointer",
-                        marginRight: 12,
+                        fontSize: 18,
                       }}
                       onClick={() => {
                         setEditingAccount(acc);
@@ -422,11 +417,13 @@ const Accounts: React.FC = () => {
                           color: acc.color,
                         });
                       }}
+                      title={t('common.edit')}
                     />
 
                     <DeleteOutlined
-                      style={{ color: "#ff4d4f", cursor: "pointer" }}
+                      style={{ color: "#ff4d4f", cursor: "pointer", fontSize: 18 }}
                       onClick={() => handleDelete(acc.id)}
+                      title={t('common.delete')}
                     />
                   </Col>
                 </Row>
@@ -444,13 +441,12 @@ const Accounts: React.FC = () => {
                   style={{
                     height: 1,
                     background: "rgba(0,0,0,0.1)",
-                    marginTop: 16,
-                    marginBottom: 16,
+                    marginBlock: 16, // ✅ RTL-aware margin
                   }}
                 />
 
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  Balance
+                  {t('accounts.balance')}
                 </Text>
 
                 <div style={{ fontSize: 20, fontWeight: 600 }}>
@@ -463,17 +459,19 @@ const Accounts: React.FC = () => {
                   {formatMoney(baseValue)} {baseUnit}
                 </Text>
 
+                {/* ✅ RTL: Arrow stays bottom-right */}
                 <ArrowRightOutlined
                   onClick={() => navigate(`/accounts/${acc.id}`)}
                   style={{
                     position: "absolute",
-                    right: 24,
+                    insetInlineEnd: 24,  // ✅ RTL-aware positioning
                     bottom: 20,
                     fontSize: 18,
                     color: "#999",
                     cursor: "pointer",
                     transform: "rotate(-45deg)",
                   }}
+                  title={t('common.viewDetails', { defaultValue: 'View details' })}
                 />
               </Card>
             </Col>
@@ -484,8 +482,8 @@ const Accounts: React.FC = () => {
       {!isAdding && accounts.length === 0 && (
         <Card style={{ textAlign: "center", padding: 40 }}>
           <div style={{ fontSize: 60, opacity: 0.5 }}>💼</div>
-          <Title level={4}>No accounts yet</Title>
-          <Text type="secondary">Create your first account</Text>
+          <Title level={4}>{t('dashboard.noAccounts')}</Title>
+          <Text type="secondary">{t('accounts.add')}</Text>
         </Card>
       )}
     </div>

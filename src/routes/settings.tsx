@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Avatar, Select, Divider, Button } from "antd";
 import { GlobalOutlined, SyncOutlined, DownloadOutlined } from "@ant-design/icons";
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
 const Settings: React.FC = () => {
+  const { t } = useTranslation();
   const [units, setUnits] = useState<any[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
 
-  // Load units + selected base unit
   useEffect(() => {
     const savedUnits = JSON.parse(localStorage.getItem("units") || "[]");
 
-    // fallback if empty
     const defaultUnits = [
       { id: 1, code: "USD", name: "US Dollar", symbol: "$" },
       { id: 2, code: "EUR", name: "Euro", symbol: "€" },
@@ -25,7 +25,7 @@ const Settings: React.FC = () => {
 
     const savedBase = localStorage.getItem("baseUnit");
     if (savedBase) {
-      const found = finalUnits.find((u) => u.code === savedBase);
+      const found = finalUnits.find((u: any) => u.code === savedBase);
       setSelectedUnit(found || finalUnits[0]);
     } else {
       setSelectedUnit(finalUnits[0]);
@@ -33,7 +33,7 @@ const Settings: React.FC = () => {
   }, []);
 
   const handleChange = (value: string) => {
-    const unit = units.find((u) => u.code === value);
+    const unit = units.find((u: any) => u.code === value);
     if (!unit) return;
 
     setSelectedUnit(unit);
@@ -43,7 +43,7 @@ const Settings: React.FC = () => {
   if (!selectedUnit) return null;
 
   return (
-    <div style={{ marginLeft: "5px", marginRight: "5px" }}>
+    <div style={{ paddingInline: "5px" }}>
       <Row align="middle" gutter={16}>
         <Col>
           <Avatar
@@ -54,21 +54,28 @@ const Settings: React.FC = () => {
         </Col>
 
         <Col flex="auto">
-          <div style={{ fontSize: 16, fontWeight: 600 }}>Settings</div>
-          <div style={{ color: "#888" }}>Manage your preferences</div>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>
+            {t('settings.title')}
+          </div>
+          <div style={{ color: "#888" }}>
+            {t('settings.subtitle')}
+          </div>
         </Col>
       </Row>
 
-      <Card style={{ marginTop: "16px", borderRadius: "16px" }}>
-        {/* GENERAL SETTINGS */}
+      <Card style={{ marginBlockStart: "16px", borderRadius: "16px" }}>
         <Row align="middle">
           <Col>
-            <h1 style={{ marginTop: "5px" }}>General Settings</h1>
-            <p style={{ marginBottom: "0", fontWeight: "500", color: "grey" }}>
-              Base Unit
+            <h1 style={{ marginBlockStart: "5px" }}>
+              {t('settings.general', { defaultValue: 'General Settings' })}
+            </h1>
+            <p style={{ marginBlockEnd: "0", fontWeight: "500", color: "grey" }}>
+              {t('settings.baseUnit')}
             </p>
-            <p style={{ marginTop: "2px" }}>
-              All values will be converted to this unit on the dashboard
+            <p style={{ marginBlockStart: "2px" }}>
+              {t('settings.baseUnitDescription', { 
+                defaultValue: 'All values will be converted to this unit on the dashboard' 
+              })}
             </p>
           </Col>
         </Row>
@@ -82,71 +89,78 @@ const Settings: React.FC = () => {
                 width: "100%",
                 borderRadius: 16,
                 padding: "10px",
-                marginTop: 8,
+                marginBlockStart: 8,
               }}
-              placeholder="Select a unit"
+              placeholder={t('settings.selectUnit', { defaultValue: 'Select a unit' })}
             >
-              {units.map((unit) => (
+              {units.map((unit: any) => (
                 <Option key={unit.id} value={unit.code}>
-                  <span style={{ marginRight: 6 }}>{unit.symbol}</span>
+                  <span style={{ marginInlineEnd: 6 }}>{unit.symbol}</span>
                   {unit.code} - {unit.name}
                 </Option>
               ))}
             </Select>
-            <Divider style={{ marginTop: 16 }} />
+            <Divider style={{ marginBlockStart: 16 }} />
           </Col>
         </Row>
 
-        {/* APP UPDATES */}
         <Row align="middle">
           <Col>
-            <p style={{ marginBottom: "0", fontWeight: "500", color: "grey" }}>
-              App Updates
+            <p style={{ marginBlockEnd: "0", fontWeight: "500", color: "grey" }}>
+              {t('settings.appUpdates')}
             </p>
-            <p style={{ marginTop: "2px" }}>Fetch the latest release instantly</p>
-          </Col>
-          <Col span={24}>
-            <Button
-              style={{ width: "100%", borderRadius: "30px" }}
-              icon={<SyncOutlined style={{ marginRight: 6 }} />}
-            >
-              Update Manually
-            </Button>
-          </Col>
-          <Divider style={{ marginTop: 16 }} />
-        </Row>
-
-        {/* INSTALL APP */}
-        <Row align="middle">
-          <Col>
-            <p style={{ marginBottom: "0", fontWeight: "500", color: "grey" }}>
-              Install WealthFlow
-            </p>
-            <p style={{ marginTop: "2px" }}>
-              Add the app to your home screen for a native feel
+            <p style={{ marginBlockStart: "2px" }}>
+              {t('settings.appUpdatesDescription', { 
+                defaultValue: 'Fetch the latest release instantly' 
+              })}
             </p>
           </Col>
           <Col span={24}>
             <Button
               style={{ width: "100%", borderRadius: "30px" }}
-              icon={<DownloadOutlined style={{ marginRight: 6 }} />}
+              icon={<SyncOutlined style={{ marginInlineEnd: 6 }} />}
             >
-              Add to Home Screen
+              {t('settings.updateManually', { defaultValue: 'Update Manually' })}
             </Button>
           </Col>
-          <Divider style={{ marginTop: 16 }} />
+          <Divider style={{ marginBlockStart: 16 }} />
         </Row>
 
-        {/* ABOUT */}
+        <Row align="middle">
+          <Col>
+            <p style={{ marginBlockEnd: "0", fontWeight: "500", color: "grey" }}>
+              {t('settings.installApp')}
+            </p>
+            <p style={{ marginBlockStart: "2px" }}>
+              {t('settings.installAppDescription', { 
+                defaultValue: 'Add the app to your home screen for a native feel' 
+              })}
+            </p>
+          </Col>
+          <Col span={24}>
+            <Button
+              style={{ width: "100%", borderRadius: "30px" }}
+              icon={<DownloadOutlined style={{ marginInlineEnd: 6 }} />}
+            >
+              {t('settings.addToHomeScreen', { defaultValue: 'Add to Home Screen' })}
+            </Button>
+          </Col>
+          <Divider style={{ marginBlockStart: 16 }} />
+        </Row>
+
         <Row>
-          <p style={{ fontWeight: "500" }}>About</p>
+          <p style={{ fontWeight: "500" }}>
+            {t('settings.about')}
+          </p>
         </Row>
         <Row justify="space-between">
           <Col>
-            <p>version</p> <p>storage</p>
+            <p>{t('settings.version', { defaultValue: 'version' })}</p>
+            <p>{t('settings.storage', { defaultValue: 'storage' })}</p>
           </Col>
           <Col>
-            <p>1.0.0</p> <p>Local Browser</p>
+            <p>1.0.0</p>
+            <p>{t('settings.localBrowser', { defaultValue: 'Local Browser' })}</p>
           </Col>
         </Row>
       </Card>

@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "~/components/containers/layout/index";
 import Dashboard from "~/routes/dashboard";

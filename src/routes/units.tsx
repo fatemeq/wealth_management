@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, Tabs, Row, Col, Button, Modal, Input, Select, Flex } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useTranslation } from 'react-i18next';
 import { useUnits } from "./hooks/useUnits";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import "./styles.css";
@@ -17,6 +18,7 @@ const UnitForm = ({
   onChange,
   onSave,
   onCancel,
+  t,
 }: any) => (
   <Card
     style={{
@@ -26,39 +28,45 @@ const UnitForm = ({
       marginBottom: 16,
     }}
   >
-    <h3>{isAddingUnit ? "Add New Unit" : "Edit Unit"}</h3>
+    <h3>{isAddingUnit ? t('units.addUnitTitle') : t('units.editUnitTitle')}</h3>
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>Unit Code</p>
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.unitCode')}
+    </p>
     <Input
-      placeholder="USD, BTC, GOLD"
+      placeholder={t('units.unitCodePlaceholder')}
       value={editingUnit?.code || ""}
-      onChange={(e) => onChange({ code: e.target.value.toUpperCase() })}
+      onChange={(e: any) => onChange({ code: e.target.value.toUpperCase() })}
     />
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>Unit Name</p>
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.unitName')}
+    </p>
     <Input
-      placeholder="US Dollar, Bitcoin, Gold Ounce"
+      placeholder={t('units.unitNamePlaceholder')}
       value={editingUnit?.name || ""}
-      onChange={(e) => onChange({ name: e.target.value })}
+      onChange={(e: any) => onChange({ name: e.target.value })}
     />
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>Symbol</p>
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.unitSymbol')}
+    </p>
     <Input
-      placeholder="$ / ₿ / 🟡"
+      placeholder={t('units.unitSymbolPlaceholder')}
       value={editingUnit?.symbol || ""}
-      onChange={(e) => onChange({ symbol: e.target.value })}
+      onChange={(e: any) => onChange({ symbol: e.target.value })}
     />
 
-    <Flex gap={12} style={{ marginTop: 16 }} wrap="wrap">
+    <Flex gap={12} style={{ marginBlockStart: 16 }} wrap="wrap">
       <Button
         type="primary"
         style={{ flex: 1, minWidth: 100 }}
         onClick={onSave}
       >
-        {isAddingUnit ? "Add" : "Update"}
+        {isAddingUnit ? t('common.add') : t('common.save')}
       </Button>
       <Button style={{ flex: 1, minWidth: 100 }} onClick={onCancel}>
-        Cancel
+        {t('common.cancel')}
       </Button>
     </Flex>
   </Card>
@@ -74,6 +82,7 @@ const RateForm = ({
   onChange,
   onSave,
   onCancel,
+  t,
 }: any) => (
   <Card
     style={{
@@ -83,14 +92,16 @@ const RateForm = ({
       marginBottom: 16,
     }}
   >
-    <h3>{isAddingRate ? "Add Exchange Rate" : "Edit Exchange Rate"}</h3>
+    <h3>{isAddingRate ? t('units.addRateTitle') : t('units.editRateTitle')}</h3>
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>From Unit</p>
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.fromUnit')}
+    </p>
     <Select
       value={editingRate?.from || undefined}
-      placeholder="Select Base Unit"
+      placeholder={t('units.fromUnitPlaceholder')}
       style={{ width: "100%", borderRadius: 12 }}
-      onChange={(value) => onChange({ from: value })}
+      onChange={(value: string) => onChange({ from: value })}
     >
       {currencyUnits.map((u: any) => (
         <Option key={u.code} value={u.code}>
@@ -99,12 +110,14 @@ const RateForm = ({
       ))}
     </Select>
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>To Unit</p>
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.toUnit')}
+    </p>
     <Select
       value={editingRate?.to || undefined}
-      placeholder="Select Target Unit"
+      placeholder={t('units.toUnitPlaceholder')}
       style={{ width: "100%", borderRadius: 12 }}
-      onChange={(value) => onChange({ to: value })}
+      onChange={(value: string) => onChange({ to: value })}
     >
       {currencyUnits.map((u: any) => (
         <Option key={u.code} value={u.code}>
@@ -113,27 +126,27 @@ const RateForm = ({
       ))}
     </Select>
 
-    <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 500 }}>
-      Exchange Rate
+    <p style={{ marginBlockStart: 12, marginBlockEnd: 0, fontWeight: 500 }}>
+      {t('units.exchangeRate')}
     </p>
     <Input
       type="number"
       placeholder="1.0"
       step="0.00000001"
       value={editingRate?.value || ""}
-      onChange={(e) => onChange({ value: parseFloat(e.target.value) || 0 })}
+      onChange={(e: any) => onChange({ value: parseFloat(e.target.value) || 0 })}
     />
 
-    <Flex gap={12} style={{ marginTop: 16 }} wrap="wrap">
+    <Flex gap={12} style={{ marginBlockStart: 16 }} wrap="wrap">
       <Button
         type="primary"
         style={{ flex: 1, minWidth: 100 }}
         onClick={onSave}
       >
-        {isAddingRate ? "Add" : "Update"}
+        {isAddingRate ? t('common.add') : t('common.save')}
       </Button>
       <Button style={{ flex: 1, minWidth: 100 }} onClick={onCancel}>
-        Cancel
+        {t('common.cancel')}
       </Button>
     </Flex>
   </Card>
@@ -142,7 +155,7 @@ const RateForm = ({
 // =======================================================================================
 // RATE CARD
 // =======================================================================================
-const RateCard = ({ r, onEdit, onDelete }: any) => (
+const RateCard = ({ r, onEdit, onDelete, t }: any) => (
   <Card
     style={{
       borderRadius: 16,
@@ -150,7 +163,7 @@ const RateCard = ({ r, onEdit, onDelete }: any) => (
       padding: 12,
     }}
   >
-    <Row justify="space-between" align="middle" style={{ marginTop: 5 }}>
+    <Row justify="space-between" align="middle" style={{ marginBlockStart: 5 }}>
       <Col>
         <div
           style={{
@@ -158,7 +171,7 @@ const RateCard = ({ r, onEdit, onDelete }: any) => (
             padding: "4px 10px",
             borderRadius: 8,
             background: "rgba(0,0,0,0.05)",
-            marginRight: 8,
+            marginInlineEnd: 8,  // ✅ RTL-aware
           }}
         >
           {r.symbolFrom} {r.from}
@@ -170,13 +183,13 @@ const RateCard = ({ r, onEdit, onDelete }: any) => (
             padding: "4px 10px",
             borderRadius: 8,
             background: "rgba(0,0,0,0.05)",
-            marginLeft: 8,
+            marginInlineStart: 8,  // ✅ RTL-aware
           }}
         >
           {r.symbolTo} {r.to}
         </div>
       </Col>
-      <Col>
+      <Col style={{ display: "flex", gap: 12 }}> {/* ✅ RTL-aware button spacing */}
         <EditOutlined
           style={{
             color: "#fa8c16",
@@ -184,32 +197,33 @@ const RateCard = ({ r, onEdit, onDelete }: any) => (
             fontSize: 16,
           }}
           onClick={onEdit}
+          title={t('common.edit')}
         />
         <DeleteOutlined
           style={{
             color: "#ff0115",
-            marginLeft: 12,
             cursor: "pointer",
             fontSize: 16,
           }}
           onClick={onDelete}
+          title={t('common.delete')}
         />
       </Col>
     </Row>
 
-    <p style={{ marginTop: 30 }}>
+    <p style={{ marginBlockStart: 30 }}>
       1 {r.from} = {formatMoney(Number(r.value), 8)} {r.to}
     </p>
 
     <p
       style={{
-        marginTop: 8,
+        marginBlockStart: 8,
+        marginBlockEnd: 5,
         fontSize: 13,
         color: "#666",
-        marginBottom: 5,
       }}
     >
-      Updated {r.updated}
+      {t('units.updated')} {r.updated}
     </p>
   </Card>
 );
@@ -218,6 +232,7 @@ const RateCard = ({ r, onEdit, onDelete }: any) => (
 // MAIN COMPONENT
 // =======================================================================================
 const Units: React.FC = () => {
+  const { t } = useTranslation();
   const { units, addUnit, updateUnit, deleteUnit } = useUnits();
 
   const [editingUnit, setEditingUnit] = useState<any | null>(null);
@@ -273,10 +288,11 @@ const Units: React.FC = () => {
     if (!unitToDelete) return;
 
     Modal.confirm({
-      title: "Are you sure you want to delete this unit?",
-      content: "All related exchange rates will also be deleted.",
-      okText: "Yes, delete",
+      title: t('units.deleteUnitConfirmTitle'),
+      content: t('units.deleteUnitConfirmContent'),
+      okText: t('common.yesDelete'),
       okType: "danger",
+      cancelText: t('common.cancel'),
       onOk: () => {
         deleteUnit(id);
         setRates(
@@ -322,9 +338,10 @@ const Units: React.FC = () => {
 
   const deleteRate = (id: number) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this rate?",
-      okText: "Yes, delete",
+      title: t('units.deleteRateConfirmTitle'),
+      okText: t('common.yesDelete'),
       okType: "danger",
+      cancelText: t('common.cancel'),
       onOk: () => setRates(rates.filter((r: any) => r.id !== id)),
     });
   };
@@ -332,8 +349,8 @@ const Units: React.FC = () => {
   const createRate = () => {
     if (currencyUnits.length < 2) {
       Modal.error({
-        title: "Not enough units",
-        content: "You need at least two money units to create an exchange rate.",
+        title: t('units.notEnoughUnitsTitle'),
+        content: t('units.notEnoughUnitsContent'),
       });
       return;
     }
@@ -355,8 +372,8 @@ const Units: React.FC = () => {
 
     if (from === to) {
       Modal.error({
-        title: "Invalid exchange pair",
-        content: "From and To units cannot be the same.",
+        title: t('units.invalidExchangePairTitle'),
+        content: t('units.invalidExchangePairContent'),
       });
       return;
     }
@@ -370,8 +387,8 @@ const Units: React.FC = () => {
 
     if (exactExists || reverseExists) {
       Modal.error({
-        title: "Rate already exists",
-        content: "A conversion rate between these two units already exists.",
+        title: t('units.rateExistsTitle'),
+        content: t('units.rateExistsContent'),
       });
       return;
     }
@@ -420,10 +437,10 @@ const Units: React.FC = () => {
   };
 
   return (
-    <div style={{ marginLeft: 5, marginRight: 5 }}>
+    <div style={{ paddingInline: 5 }}> {/* ✅ RTL-aware container */}
       <Tabs defaultActiveKey="units" className="custom-tabs">
         {/* UNITS TAB */}
-        <Tabs.TabPane tab="Units" key="units">
+        <Tabs.TabPane tab={t('units.units')} key="units">
           <Row
             justify="space-between"
             align="middle"
@@ -445,9 +462,11 @@ const Units: React.FC = () => {
                     color: "grey",
                   }}
                 >
-                  Your units
+                  {t('units.yourUnits')}
                 </p>
-                <p style={{ margin: 2 }}>Manage currencies and assets</p>
+                <p style={{ marginBlockStart: 2 }}>
+                  {t('units.unitsSubtitle')}
+                </p>
               </div>
             </Col>
             <Col style={{ display: "flex", alignItems: "center" }}>
@@ -456,7 +475,7 @@ const Units: React.FC = () => {
                 style={{ borderRadius: 10 }}
                 onClick={createUnit}
               >
-                + Add Unit
+                {t('units.addUnit')}
               </Button>
             </Col>
           </Row>
@@ -468,6 +487,7 @@ const Units: React.FC = () => {
               onChange={handleUnitChange}
               onSave={isAddingUnit ? saveNewUnit : updateUnitNow}
               onCancel={cancelUnitEdit}
+              t={t}
             />
           )}
 
@@ -487,7 +507,7 @@ const Units: React.FC = () => {
                         style={{
                           fontSize: 28,
                           fontWeight: 600,
-                          marginRight: 6,
+                          marginInlineEnd: 6,  // ✅ RTL-aware
                         }}
                       >
                         {unit.symbol}
@@ -496,7 +516,7 @@ const Units: React.FC = () => {
                         {unit.code}
                       </span>
                     </Col>
-                    <Col>
+                    <Col style={{ display: "flex", gap: 12 }}> {/* ✅ RTL-aware buttons */}
                       <EditOutlined
                         style={{
                           color: "#fa8c16",
@@ -507,19 +527,20 @@ const Units: React.FC = () => {
                           setEditingUnit({ ...unit });
                           setIsAddingUnit(false);
                         }}
+                        title={t('common.edit')}
                       />
                       <DeleteOutlined
                         style={{
                           color: "red",
-                          marginLeft: 12,
                           cursor: "pointer",
                           fontSize: 16,
                         }}
                         onClick={() => handleDeleteUnit(unit.id)}
+                        title={t('common.delete')}
                       />
                     </Col>
                   </Row>
-                  <p style={{ marginTop: 4, fontSize: 14 }}>{unit.name}</p>
+                  <p style={{ marginBlockStart: 4, fontSize: 14 }}>{unit.name}</p>
                 </Card>
               </Col>
             ))}
@@ -527,7 +548,7 @@ const Units: React.FC = () => {
         </Tabs.TabPane>
 
         {/* EXCHANGE RATES TAB */}
-        <Tabs.TabPane tab="Exchange Rates" key="exchange">
+        <Tabs.TabPane tab={t('units.rates')} key="exchange">
           <Row
             justify="space-between"
             align="middle"
@@ -549,10 +570,10 @@ const Units: React.FC = () => {
                     color: "grey",
                   }}
                 >
-                  Exchange Rates
+                  {t('units.exchangeRates')}
                 </p>
-                <p style={{ margin: 2 }}>
-                  Define conversion rates between units
+                <p style={{ marginBlockStart: 2 }}>
+                  {t('units.ratesSubtitle')}
                 </p>
               </div>
             </Col>
@@ -562,7 +583,7 @@ const Units: React.FC = () => {
                 style={{ borderRadius: 10 }}
                 onClick={createRate}
               >
-                + Add Rate
+                {t('units.addRate')}
               </Button>
             </Col>
           </Row>
@@ -575,6 +596,7 @@ const Units: React.FC = () => {
               onChange={handleRateChange}
               onSave={isAddingRate ? saveNewRate : saveRateUpdate}
               onCancel={cancelRateEdit}
+              t={t}
             />
           )}
 
@@ -588,6 +610,7 @@ const Units: React.FC = () => {
                     setIsAddingRate(false);
                   }}
                   onDelete={() => deleteRate(r.id)}
+                  t={t}
                 />
               </Col>
             ))}
